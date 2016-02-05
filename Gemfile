@@ -16,6 +16,7 @@ gem 'coffee-rails', '~> 4.1.0'
 
 gem 'rspec-rails'
 gem 'email_validator'
+gem 'bootstrap-sass', '~> 3.3.6'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
