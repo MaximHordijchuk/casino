@@ -4,5 +4,6 @@ class PokerTable < ActiveRecord::Base
 
   scope :available, -> (n = 6) { where('users_count < ? AND start_time >= ?', n, Time.zone.now) }
 
-  validates :name, uniqueness: { case_sensitive: false }
+  validates :name, uniqueness: { case_sensitive: false }, presence: true
+  validates :start_time, presence: true
 end
