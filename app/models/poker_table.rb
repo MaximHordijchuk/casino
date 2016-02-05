@@ -1,5 +1,8 @@
 class PokerTable < ActiveRecord::Base
-  has_and_belongs_to_many :users
+  has_many :poker_tables_users, dependent: :destroy
+  has_many :users, through: :poker_tables_users
+
+  scope :available, -> (n = 6) { where('users_count < ? AND start_time >= ?', n, Time.zone.now) }
 
   validates :name, uniqueness: { case_sensitive: false }
 end
