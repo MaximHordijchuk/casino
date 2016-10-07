@@ -8,6 +8,7 @@ class PokerTable < ActiveRecord::Base
 
   validates :name, uniqueness: { case_sensitive: false }, presence: true
   validates :start_time, presence: true
+  validates :duration, numericality: { greater_than: 0 }
 
   def available?
     users_count < MAX_USERS_COUNT && start_time > Time.now
