@@ -1,49 +1,32 @@
 class MainController < ApplicationController
   before_action :set_user, only: [:update]
+  before_action :set_poker_tables
 
   def index
-    @poker_tables = PokerTable.available
+    @user = User.new
   end
 
   def update
     respond_to do |format|
-      if @user.persisted? || @user.save
-        add_poker_tables
-        if @tables.empty?
-          format.html { redirect_to '/', alert: 'No poker tables were added' }
-        else
-          format.html { redirect_to '/', notice: poker_table_notice }
-        end
+      if @user.update_with_merging(user_params)
+        format.html { redirect_to root_path, notice: 'Poker tables were successfully added.' }
       else
-        format.html { redirect_to '/', alert: 'Could not create user' }
+        format.html { render :index, alert: 'Could not create user' }
       end
     end
   end
 
   private
 
-  def poker_table_notice
-    'Poker tables ' << @tables.map { |table| table.name }.join(', ') << ' were successfully added.'
-  end
-
   def set_user
-    @user = User.find_or_initialize_by(user_params)
+    @user = User.find_or_initialize_by(email: user_params[:email])
   end
 
-  def add_poker_tables
-    @tables = []
-    if !params[:poker_tables].nil? && !params[:poker_tables][:id].nil?
-      tables = params[:poker_tables][:id].map { |id, checked| id.to_i if checked == '1' }.flatten
-      tables &= PokerTable.available.pluck(:id).to_a
-      tables.each do |table_id|
-        table = PokerTable.find(table_id)
-        @tables << table
-        @user.poker_tables << table
-      end
-    end
+  def set_poker_tables
+    @poker_tables = PokerTable.available
   end
 
   def user_params
-    params.require(:user).permit(:email)
+    params.require(:user).permit(:email, { poker_table_ids: [] })
   end
 end

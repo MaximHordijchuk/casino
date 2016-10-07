@@ -13,32 +13,38 @@
 <% if @poker_tables.empty? %>
   <div class="alert alert-warning alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <strong>Sorry</strong>, but there are no available poker tables at the moment
+    <strong>Sorry</strong>, but there are no available poker tables at the moment.
   </div>
 <% end %>
 
-<%= form_tag('/update', class: 'form-signin') do %>
+<% if @user.errors.any? %>
+    <div id="error_explanation" class="alert alert-info" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <span><strong>User was not updated:</strong></span>
+      <ul>
+        <% @user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+<% end %>
+
+<%= form_tag(update_path, class: 'form-signin') do %>
   <h2>Enter your email</h2>
   <label for="inputEmail" class="sr-only">Email address</label>
   <%= fields_for :user do |user_fields| %>
     <%= user_fields.email_field :email, class: 'form-control', placeholder: 'Email address', required: true, autofocus: true %>
   <% end %>
-  <div class="checkbox">
-    <ul class="list-group">
-    <% @poker_tables.each do |table| %>
-        <li class="list-group-item">
-          <label>
-            <%= check_box('poker_tables[id]', table.id) %>
-            <%= table.name %>
-          </label>
-        </li>
+  <ul class="checkbox list-group">
+    <%= collection_check_boxes(:user, :poker_table_ids, @poker_tables, :id, :name, include_hidden: false) do |b| %>
+      <li class="list-group-item">
+        <%= b.label { b.check_box + b.text } %>
+      </li>
     <% end %>
-    </ul>
-  </div>
+  </ul>
   <% if @poker_tables.empty? %>
     <%= submit_tag 'Add email', class: 'btn btn-lg btn-primary btn-block' %>
   <% else %>
     <%= submit_tag 'Add tables', class: 'btn btn-lg btn-primary btn-block' %>
   <% end %>
-
 <% end %>
