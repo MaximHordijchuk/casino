@@ -1,28 +1,18 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
 User.destroy_all
 PokerTable.destroy_all
 
+PokerTable.create! [
+  { name: 'Available Table 1', start_time: Time.now + 100.day, duration: 1.hour },
+  { name: 'Available Table 2', start_time: Time.now + 300.day, duration: 1.hour },
+  { name: 'Unavailable Table 1', start_time: 1.day.ago, duration: 1.hour },
+  { name: 'Unavailable Table 2', start_time: 2.days.ago, duration: 1.hour },
+  { name: 'Intersected Table 1', start_time: Time.now + 500.days, duration: 1.hour },
+  { name: 'Intersected Table 2', start_time: Time.now + 500.days - 30.minutes, duration: 1.hour },
+]
+
 User.create! [
-    { email: 'vasya@gmail.com' },
-    { email: 'anton@mail.ru' },
-    { email: 'vlad@i.ua' },
-    { email: 'denis1993@yandex.ru' },
-    { email: 'demedovich@gmail.com' },
-    { email: 'andrey@gmail.com' },
-    { email: 'ivan@i.ua' },
-             ]
-
-10.times do |i|
-  PokerTable.create!({ name: "Poker Table #{i}",
-                       start_time: Time.zone.now + rand(5).minutes })
-end
-PokerTable.create!({ name: "Poker Table 11",
-                     start_time: Time.zone.now - 1.minutes})
-
-PokerTable.first.users << User.all.limit(6)
+  { email: 'user_without_tables@mail.ru' },
+  { email: 'user_with_tables@mail.ru', poker_tables: [PokerTable.find_by_name('Available Table 1')] },
+  { email: 'user_with_intersected_table@mail.ru', poker_tables: [PokerTable.find_by_name('Intersected Table 1')] },
+  { email: 'user_with_unavailable_table@mail.ru', poker_tables: [PokerTable.find_by_name('Unavailable Table 1')] }
+]
