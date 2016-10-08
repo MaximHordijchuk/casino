@@ -1,6 +1,5 @@
 class User < ActiveRecord::Base
-  has_many :poker_tables_users, dependent: :destroy
-  has_many :poker_tables, through: :poker_tables_users
+  has_and_belongs_to_many :poker_tables
 
   before_validation :downcase_email
   validates :email, email: true, presence: true, uniqueness: true
@@ -8,8 +7,13 @@ class User < ActiveRecord::Base
 
   def update_with_merging(params)
     merged_params = params
-    if merged_params[:poker_table_ids] && !poker_table_ids.empty? && validate_tables_available(merged_params[:poker_table_ids])
-      merged_params[:poker_table_ids] |= poker_table_ids
+    if merged_params[:poker_table_ids]
+      unless validate_tables_available(merged_params[:poker_table_ids])
+        return false
+      end
+      unless poker_table_ids.empty?
+        merged_params[:poker_table_ids] |= poker_table_ids
+      end
     end
     update(merged_params)
   end
@@ -21,9 +25,14 @@ class User < ActiveRecord::Base
   end
 
   def validate_tables_available(poker_table_ids)
+    result = true
     PokerTable.where(id: poker_table_ids).each do |poker_table|
-      errors.add(:poker_table, "#{poker_table.name} is not available") unless poker_table.available?
+      unless poker_table.available?
+        errors.add(:poker_table, "#{poker_table.name} is not available")
+        result = false
+      end
     end
+    result
   end
 
   def poker_tables_dont_intersect

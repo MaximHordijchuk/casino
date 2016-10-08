@@ -1,6 +1,5 @@
 class PokerTable < ActiveRecord::Base
-  has_many :poker_tables_users, dependent: :destroy
-  has_many :users, through: :poker_tables_users
+  has_and_belongs_to_many :users
 
   MAX_USERS_COUNT = 6
 
