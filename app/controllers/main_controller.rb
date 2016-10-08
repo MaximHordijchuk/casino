@@ -1,9 +1,8 @@
 class MainController < ApplicationController
   before_action :set_user, only: [:update]
-  before_action :set_poker_tables
+  before_action :set_poker_tables, only: [:poker_tables]
 
   def index
-    @user = User.new
   end
 
   # put /update
