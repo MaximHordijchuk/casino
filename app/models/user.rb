@@ -5,11 +5,12 @@ class User < ActiveRecord::Base
   before_validation :downcase_email
   validates :email, email: true, presence: true, uniqueness: true
   validate :poker_tables_dont_intersect
-  validate :poker_tables_available
 
   def update_with_merging(params)
     merged_params = params
-    merged_params[:poker_table_ids] |= poker_table_ids unless poker_table_ids.empty?
+    if merged_params[:poker_table_ids] && !poker_table_ids.empty? && validate_tables_available(merged_params[:poker_table_ids])
+      merged_params[:poker_table_ids] |= poker_table_ids
+    end
     update(merged_params)
   end
 
@@ -19,8 +20,8 @@ class User < ActiveRecord::Base
     self.email = self.email.downcase
   end
 
-  def poker_tables_available
-    poker_tables.each do |poker_table|
+  def validate_tables_available(poker_table_ids)
+    PokerTable.where(id: poker_table_ids).each do |poker_table|
       errors.add(:poker_table, "#{poker_table.name} is not available") unless poker_table.available?
     end
   end

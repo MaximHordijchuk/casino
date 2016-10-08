@@ -6,14 +6,18 @@ class MainController < ApplicationController
     @user = User.new
   end
 
+  # put /update
+  # put /update.json
   def update
-    respond_to do |format|
-      if @user.update_with_merging(user_params)
-        format.html { redirect_to root_path, notice: 'Poker tables were successfully added.' }
-      else
-        format.html { render :index, alert: 'Could not create user' }
-      end
+    if @user.update_with_merging(user_params)
+      render json: { notice: 'Poker tables were successfully added.' }
+    else
+      render json: { alert: 'Could not update user', errors: @user.errors.full_messages }, status: 422
     end
+  end
+
+  def poker_tables
+    render json: @poker_tables
   end
 
   private
