@@ -1,0 +1,11 @@
+user_without_tables:
+  email: user_without_tables@mail.ru
+
+user_with_tables:
+  email: user_with_tables@mail.ru
+
+user_with_intersected_table:
+  email: user_with_intersected_table@mail.ru
+
+user_with_unavailable_table:
+  email: user_with_unavailable_table@mail.ru

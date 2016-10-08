@@ -1,0 +1,25 @@
+available:
+  name: Available Table 1
+  start_time: <%= (Time.now + 1.day).to_s(:db) %>
+  duration: <%= 1.day %>
+
+available_2:
+  name: Available Table 2
+  start_time: <%= (Time.now + 3.day).to_s(:db) %>
+  duration: <%= 1.day %>
+
+unavailable:
+  name: Unavailable Table 1
+  start_time: <%= 1.day.ago.to_s(:db) %>
+  duration: <%= 1.hour %>
+
+intersected:
+  name: Intersescted Table 1
+  start_time: <%= (Time.now + 10.days).to_s(:db) %>
+  duration: <%= 1.hour %>
+
+intersected_2:
+  name: Intersescted Table 2
+  start_time: <%= (Time.now + 10.days - 30.minutes).to_s(:db) %>
+  duration: <%= 1.hour %>
+

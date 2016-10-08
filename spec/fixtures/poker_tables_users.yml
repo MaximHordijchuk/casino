@@ -1,0 +1,11 @@
+relation1:
+  user: user_with_tables
+  poker_table: available
+
+relation2:
+  user: user_with_intersected_table
+  poker_table: intersected
+
+relation3:
+  user: user_with_unavailable_table
+  poker_table: unavailable

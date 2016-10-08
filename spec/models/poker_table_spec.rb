@@ -1,5 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe PokerTable, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'available' do
+    it 'returns available tables' do
+      PokerTable.available.each { |table| expect(table.available?).to be_truthy }
+    end
+  end
 end
